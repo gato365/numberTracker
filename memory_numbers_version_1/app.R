@@ -10,6 +10,7 @@
 library(shiny)
 library(dplyr)
 library(readxl)
+library(stringr)
 
 setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life")
 e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') %>% 
@@ -48,10 +49,10 @@ server <- function(input, output) {
     output$evaluation <- renderPrint({ 
         
         ## Get My answer
-        emans_solution = input$solution_number
+        emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
         
         ## The Solution
-        reals_solution = '271828'
+        reals_solution = str_extract_all('271828', boundary("character"))[[1]]
         
         ## Check
         sum(emans_solution == reals_solution)
