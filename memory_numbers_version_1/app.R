@@ -54,8 +54,10 @@ server <- function(input, output) {
         ## The Solution
         reals_solution = str_extract_all('271828', boundary("character"))[[1]]
         
+        numbers_tested = length(reals_solution)
+        
         ## Check
-        sum(emans_solution == reals_solution)
+        paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
         
         
         })
