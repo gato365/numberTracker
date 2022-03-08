@@ -15,7 +15,7 @@ library(tidyverse)
 
 setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life")
 e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') #%>% 
-    # data.frame(row.names = 1)
+# data.frame(row.names = 1)
 
 
 
@@ -45,12 +45,16 @@ ui <- fluidPage(
     # Application title
     titlePanel("How many Numbers are known of e are memorized?"),
     
-    # Sidebar with a slider input for number of bins 
     
     
     # Show a plot of the generated distribution
     mainPanel(
-        textInput("solution_number", label = h3("Set 1 Numbers"), value = ""),
+        selectInput('which_set','Select Set to Test',choices = e_number_df$set),
+        
+        
+        textInput("solution_number", label = h2("Set Numbers"), value = ""),
+        
+        
         verbatimTextOutput("evaluation")
     )
     
@@ -65,8 +69,10 @@ server <- function(input, output) {
         ## Get My answer
         emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
         
+        
+        
         ## The Solution
-        reals_solution = str_extract_all(select_set_fun('set-1'), boundary("character"))[[1]] %>% 
+        reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
             str_remove('\\.') %>% 
             str_subset( ".+")
         
