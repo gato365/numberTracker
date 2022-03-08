@@ -8,13 +8,35 @@
 #
 
 library(shiny)
-library(dplyr)
+
 library(readxl)
-library(stringr)
+
+library(tidyverse)
 
 setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life")
-e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') %>% 
-    data.frame(row.names = 1)
+e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') #%>% 
+    # data.frame(row.names = 1)
+
+
+
+##--------------------------------------
+## Name: select_set_fun
+## Purpose: Get set
+## Input: set number
+## Output: set in number concatenated
+##--------------------------------------
+
+select_set_fun <- function(specified_set) {
+    ## The Solution
+    value_to_test = e_number_df %>% 
+        filter(set == specified_set) %>% 
+        select(-set) %>% 
+        unite('Merged', `col-1`:`col-4`,remove =FALSE,sep = '') %>% 
+        mutate(Merged = str_remove_all(Merged,'\'')) %>% 
+        pull(Merged)
+    return(value_to_test)
+}
+select_set_fun('set-1')
 
 
 # Define UI for application that draws a histogram
@@ -28,7 +50,7 @@ ui <- fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-        textInput("solution_number", label = h3("Enter the first number"), value = ""),
+        textInput("solution_number", label = h3("Set 1 Numbers"), value = ""),
         verbatimTextOutput("evaluation")
     )
     
@@ -44,7 +66,9 @@ server <- function(input, output) {
         emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
         
         ## The Solution
-        reals_solution = str_extract_all('271828', boundary("character"))[[1]]
+        reals_solution = str_extract_all(select_set_fun('set-1'), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
         
         numbers_tested = length(reals_solution)
         
