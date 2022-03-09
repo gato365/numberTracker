@@ -17,7 +17,19 @@ setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life")
 e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') #%>% 
 # data.frame(row.names = 1)
 
+odd_e_number_df = e_number_df %>% 
+    mutate(number = as.numeric(str_remove(set,'set-'))) %>% 
+    filter(number %% 2 != 0 )
+even_e_number_df = e_number_df  %>% 
+    anti_join(odd_e_number_df) %>%  
+    select(-set)
 
+
+df = bind_cols(odd_e_number_df,even_e_number_df) %>%  
+    select(-contains('set'),-number) %>% 
+    unite('Merged', `col-1...2`:`col-4...10`,remove =TRUE, sep = '') %>% 
+    mutate(Merged = str_remove_all(Merged,'\'')) %>% 
+    mutate(labeled = c(rep('A',5),rep('B',5),rep('C',5) ) )
 
 ##--------------------------------------
 ## Name: select_set_fun
@@ -67,14 +79,23 @@ ui <- fluidPage(
         
         
         
+
+        
+        
         conditionalPanel(
-            condition = 'input.question_style == "Sequence of 5" ',
+            condition = 'input.question_style == "Sequence of 5"',
             ## Two Types 1 at a time & A set of 5 40 number sequences 
             radioButtons(inputId = 'set_combination',label = 'Which combination are you interested in?',
                          choices = c('A', 'B', 'C'),'A'),
-     
+            
+            
+            
+            
+            textInput("solution_number1", label = h2("Set Numbers"), value = ""),
+            verbatimTextOutput("evaluation1")
+            
+            
         ),
-        
         
         
     )
@@ -86,25 +107,40 @@ server <- function(input, output) {
     
     
     output$evaluation <- renderPrint({ 
-        
         ## Get My answer
         emans_solution = str_extract_all(input$solution_number, boundary("character"))[[1]]
-        
-        
-        
         ## The Solution
         reals_solution = str_extract_all(select_set_fun(input$which_set), boundary("character"))[[1]] %>% 
             str_remove('\\.') %>% 
             str_subset( ".+")
         
         numbers_tested = length(reals_solution)
-        
         ## Check
         paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
         
+    })
+ 
+    
+    output$evaluation1 <- renderPrint({ 
+        ## Get My answer
+        emans_solution = str_extract_all(input$solution_number1, boundary("character"))[[1]]
+
+        
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[1,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        
+        numbers_tested = length(reals_solution)
+        ## Check
+        paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
         
     })
     
+       
     
 }
 
