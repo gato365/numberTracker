@@ -49,13 +49,24 @@ ui <- fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-        selectInput('which_set','Select Set to Test',choices = e_number_df$set),
+        ## Two Types 1 at a time & A set of 5 40 number sequences 
+        radioButtons(inputId = 'question_style',label = 'Which style do you want to test',
+                     choices = c('Regular', 'Sequence of 5'),'Regular'),
+        
+        ## Condition for regular
+        conditionalPanel(
+            condition = 'input.question_style == "Regular" ',
+            selectInput('which_set','Select Set to Test',choices = e_number_df$set),
+            
+            
+            textInput("solution_number", label = h2("Set Numbers"), value = ""),
+            
+            
+            verbatimTextOutput("evaluation")
+        )
         
         
-        textInput("solution_number", label = h2("Set Numbers"), value = ""),
         
-        
-        verbatimTextOutput("evaluation")
     )
     
 )
