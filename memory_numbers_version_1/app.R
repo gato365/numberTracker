@@ -63,7 +63,17 @@ ui <- fluidPage(
             
             
             verbatimTextOutput("evaluation")
-        )
+        ),
+        
+        
+        
+        conditionalPanel(
+            condition = 'input.question_style == "Sequence of 5" ',
+            ## Two Types 1 at a time & A set of 5 40 number sequences 
+            radioButtons(inputId = 'set_combination',label = 'Which combination are you interested in?',
+                         choices = c('A', 'B', 'C'),'A'),
+     
+        ),
         
         
         
