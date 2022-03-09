@@ -91,10 +91,24 @@ ui <- fluidPage(
             
             
             
-            textInput("solution_number1", label = h2("Set Numbers"), value = ""),
-            verbatimTextOutput("evaluation1")
-            
-            
+            textInput("solution_number1", label = h2("Set Numbers 1"), value = ""),
+            verbatimTextOutput("evaluation1"),
+
+            textInput("solution_number2", label = h2("Set Numbers 2"), value = ""),
+            verbatimTextOutput("evaluation2"),
+
+
+            textInput("solution_number3", label = h2("Set Numbers 3"), value = ""),
+            verbatimTextOutput("evaluation3"),
+
+
+
+            textInput("solution_number4", label = h2("Set Numbers 4"), value = ""),
+            verbatimTextOutput("evaluation4"),
+
+
+            textInput("solution_number5", label = h2("Set Numbers 5"), value = ""),
+            verbatimTextOutput("evaluation5")
         ),
         
         
@@ -122,6 +136,7 @@ server <- function(input, output) {
  
     
     output$evaluation1 <- renderPrint({ 
+        number_row = 1
         ## Get My answer
         emans_solution = str_extract_all(input$solution_number1, boundary("character"))[[1]]
 
@@ -130,7 +145,7 @@ server <- function(input, output) {
             filter(labeled == input$set_combination)
         
         ## The Solution
-        reals_solution = str_extract_all(pull(tmp_df[1,1],Merged), boundary("character"))[[1]] %>% 
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
             str_remove('\\.') %>% 
             str_subset( ".+")
         
@@ -140,7 +155,94 @@ server <- function(input, output) {
         
     })
     
-       
+   
+    
+    ## 2
+    output$evaluation2 <- renderPrint({ 
+        number_row = 2
+        ## Get My answer
+        emans_solution = str_extract_all(input$solution_number2, boundary("character"))[[1]]
+        
+        
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        
+        numbers_tested = length(reals_solution)
+        ## Check
+        paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+        
+    })
+    
+    
+    ## 3
+    output$evaluation3 <- renderPrint({ 
+        number_row = 3
+        ## Get My answer
+        emans_solution = str_extract_all(input$solution_number3, boundary("character"))[[1]]
+        
+        
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        
+        numbers_tested = length(reals_solution)
+        ## Check
+        paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+        
+    })
+    
+    ## 4
+    output$evaluation4 <- renderPrint({ 
+        number_row = 4
+        ## Get My answer
+        emans_solution = str_extract_all(input$solution_number4, boundary("character"))[[1]]
+        
+        
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        
+        numbers_tested = length(reals_solution)
+        ## Check
+        paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+        
+    })
+    
+    ## 5
+    
+    output$evaluation5 <- renderPrint({ 
+        number_row = 5
+        ## Get My answer
+        emans_solution = str_extract_all(input$solution_number5, boundary("character"))[[1]]
+        
+        
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        
+        numbers_tested = length(reals_solution)
+        ## Check
+        paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+        
+    })
+        
     
 }
 
