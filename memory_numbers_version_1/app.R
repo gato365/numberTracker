@@ -75,7 +75,8 @@ ui <- fluidPage(
             actionButton('start','Start'),
             actionButton('finish','Finish'),
             
-            verbatimTextOutput("evaluation")
+            verbatimTextOutput("evaluation"),
+            verbatimTextOutput("time_elapsed")
         ),
         
         
@@ -124,27 +125,33 @@ server <- function(input, output) {
     start_time_info <- eventReactive(input$start, {
         ## Define start Time
         start_time <- Sys.time()
-         return(start_time = start_time) 
+         return(start_time) 
     })
     
-    finished_time <- eventReactive(input$finished, {
+    finished_time_info <- eventReactive(input$finished, {
         ## Define End Time
         end_time <- Sys.time()
         
         
         ## Gather start time
-        start_time_info <- start_time_info()
-        start_time = start_time_info$start_time
+        start_time <- start_time_info()
         
+        ## How much time has transpired
         elapsed_time = end_time - start_time
        
-        return(elapsed_time = elapsed_time) 
+        return(elapsed_time) 
     })
     
     
     output$time_elapsed <- renderPrint({ 
-      
-          
+        elapsed_time <- finished_time_info()
+       
+        # elapsed_time
+        # start_time_info <- start_time_info()
+        # start_time_info
+        # start_time = start_time_info$start_time
+        # paste0(start_time_info)
+        # paste0('love')
     })
     
     
