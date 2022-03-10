@@ -71,7 +71,7 @@ ui <- fluidPage(
             selectInput('which_set','Select Set to Test',choices = e_number_df$set),
             
             
-            textInput("solution_number", label = h2("Set Numbers"), value = ""),
+            textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
             
             
             verbatimTextOutput("evaluation")
@@ -91,23 +91,23 @@ ui <- fluidPage(
             
             
             
-            textInput("solution_number1", label = h2("Set Numbers 1"), value = ""),
+            textInput("solution_number1", label = h2("Set Numbers 1"), value = "",width = "400px"),
             verbatimTextOutput("evaluation1"),
 
-            textInput("solution_number2", label = h2("Set Numbers 2"), value = ""),
+            textInput("solution_number2", label = h2("Set Numbers 2"), value = "",width = "400px"),
             verbatimTextOutput("evaluation2"),
 
 
-            textInput("solution_number3", label = h2("Set Numbers 3"), value = ""),
+            textInput("solution_number3", label = h2("Set Numbers 3"), value = "",width = "400px"),
             verbatimTextOutput("evaluation3"),
 
 
 
-            textInput("solution_number4", label = h2("Set Numbers 4"), value = ""),
+            textInput("solution_number4", label = h2("Set Numbers 4"), value = "",width = "400px"),
             verbatimTextOutput("evaluation4"),
 
 
-            textInput("solution_number5", label = h2("Set Numbers 5"), value = ""),
+            textInput("solution_number5", label = h2("Set Numbers 5"), value = "",width = "400px"),
             verbatimTextOutput("evaluation5")
         ),
         
