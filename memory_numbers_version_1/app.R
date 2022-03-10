@@ -72,7 +72,8 @@ ui <- fluidPage(
             
             
             textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
-            
+            actionButton('start','Start'),
+            actionButton('finish','Finish'),
             
             verbatimTextOutput("evaluation")
         ),
@@ -118,6 +119,33 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+    
+    
+    start_time_info <- eventReactive(input$start, {
+        ## Define start Time
+        start_time <- Sys.time()
+         return(start_time = start_time) 
+    })
+    
+    finished_time <- eventReactive(input$finished, {
+        ## Define End Time
+        end_time <- Sys.time()
+        
+        
+        ## Gather start time
+        start_time_info <- start_time_info()
+        start_time = start_time_info$start_time
+        
+        elapsed_time = end_time - start_time
+       
+        return(elapsed_time = elapsed_time) 
+    })
+    
+    
+    output$time_elapsed <- renderPrint({ 
+      
+          
+    })
     
     
     output$evaluation <- renderPrint({ 
