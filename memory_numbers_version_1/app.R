@@ -13,6 +13,8 @@ library(readxl)
 
 library(tidyverse)
 
+library(lubridate)
+
 setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life")
 e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') #%>% 
 # data.frame(row.names = 1)
@@ -73,10 +75,11 @@ ui <- fluidPage(
             
             textInput("solution_number", label = h2("Set Numbers"), value = "",width = "400px"),
             actionButton('start','Start'),
-            actionButton('finish','Finish'),
+            actionButton('stop','Stop'),
+            textOutput('timeleft')
             
-            verbatimTextOutput("evaluation"),
-            verbatimTextOutput("time_elapsed")
+            # verbatimTextOutput("evaluation"),
+            # verbatimTextOutput("time_elapsed")
         ),
         
         
@@ -119,41 +122,51 @@ ui <- fluidPage(
 )
 
 # Define server logic required to draw a histogram
-server <- function(input, output) {
+server <- function(input, output,session) {
     
     
-    start_time_info <- eventReactive(input$start, {
-        ## Define start Time
-        start_time <- Sys.time()
-         return(start_time) 
+    # start_time_info <- eventReactive(input$start, {
+    #     ## Define start Time
+    #     start_time <- Sys.time()
+    #      return(start_time) 
+    # })
+    
+    # finished_time_info <- eventReactive(input$finished, {
+    #     ## Define End Time
+    #     end_time <- Sys.time()
+    #     
+    #     
+    #     ## Gather start time
+    #     start_time <- start_time_info()
+    #     
+    #     ## How much time has transpired
+    #     elapsed_time = end_time - start_time
+    #    
+    #     return(elapsed_time) 
+    # })
+    
+    
+    # output$time_elapsed <- renderPrint({ 
+    #     elapsed_time <- finished_time_info()
+    #    
+    #     # elapsed_time
+    #     # start_time_info <- start_time_info()
+    #     # start_time_info
+    #     # start_time = start_time_info$start_time
+    #     # paste0(start_time_info)
+    #     # paste0('love')
+    # })
+    
+     timer <- reactiveVal(10)
+    active <- reactiveVal(FALSE)
+    observeEvent(input$start, {active(TRUE)})
+    observeEvent(input$stop, {active(FALSE)})
+    
+    # Output the time left.
+    output$timeleft <- renderText({
+        paste("Time left: ", seconds_to_period(timer()))
     })
-    
-    finished_time_info <- eventReactive(input$finished, {
-        ## Define End Time
-        end_time <- Sys.time()
-        
-        
-        ## Gather start time
-        start_time <- start_time_info()
-        
-        ## How much time has transpired
-        elapsed_time = end_time - start_time
-       
-        return(elapsed_time) 
-    })
-    
-    
-    output$time_elapsed <- renderPrint({ 
-        elapsed_time <- finished_time_info()
-       
-        # elapsed_time
-        # start_time_info <- start_time_info()
-        # start_time_info
-        # start_time = start_time_info$start_time
-        # paste0(start_time_info)
-        # paste0('love')
-    })
-    
+   
     
     output$evaluation <- renderPrint({ 
         ## Get My answer
