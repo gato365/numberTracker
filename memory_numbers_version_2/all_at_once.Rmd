@@ -1,14 +1,29 @@
 ---
-title: "Untitled"
+title: "Memory of Numbers"
+runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
     vertical_layout: fill
+  
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(tidyverse)
+library(shiny)
+library(readxl)
 ```
+
+```{r}
+setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life/01_thoughts_self/numberTracker")
+source('bring_in_e.R')
+
+```
+
+
+
+
 
 Column {data-width=333}
 -----------------------------------------------------------------------
@@ -16,7 +31,21 @@ Column {data-width=333}
 ### Chart A
 
 ```{r}
-
+## Set 1
+textInput("solution_number1", label = h2("Set Numbers 1"), value = "",width = "400px")
+div(style="width:250px;height:100px;",verbatimTextOutput("evaluation1"))
+## Set 2
+textInput("solution_number2", label = h2("Set Numbers 2"), value = "",width = "400px")
+div(style="width:250px;height:100px;",verbatimTextOutput("evaluation2"))
+## Set 3
+textInput("solution_number3", label = h2("Set Numbers 3"), value = "",width = "400px")
+div(style="width:250px;height:100px;",fluidRow(verbatimTextOutput("evaluation3")))
+## Set 4
+textInput("solution_number4", label = h2("Set Numbers 4"), value = "",width = "400px")
+div(style="width:250px;height:100px;",fluidRow(verbatimTextOutput("evaluation4")))
+## Set 5
+textInput("solution_number5", label = h2("Set Numbers 5"), value = "",width = "400px")
+div(style="width:250px;height:100px;",fluidRow(verbatimTextOutput("evaluation5")))
 ```
 
 Column {data-width=333}
