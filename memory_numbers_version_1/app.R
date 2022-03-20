@@ -15,23 +15,8 @@ library(tidyverse)
 
 library(lubridate)
 
-setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life")
-e_number_df = read_xlsx('emans_info.xlsx', sheet = 'e') #%>% 
-# data.frame(row.names = 1)
-
-odd_e_number_df = e_number_df %>% 
-    mutate(number = as.numeric(str_remove(set,'set-'))) %>% 
-    filter(number %% 2 != 0 )
-even_e_number_df = e_number_df  %>% 
-    anti_join(odd_e_number_df) %>%  
-    select(-set)
-
-
-df = bind_cols(odd_e_number_df,even_e_number_df) %>%  
-    select(-contains('set'),-number) %>% 
-    unite('Merged', `col-1...2`:`col-4...10`,remove =TRUE, sep = '') %>% 
-    mutate(Merged = str_remove_all(Merged,'\'')) %>% 
-    mutate(labeled = c(rep('A',5),rep('B',5),rep('C',5) ) )
+setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life/01_thoughts_self/numberTracker")
+source('bring_in_e.R')
 
 ##--------------------------------------
 ## Name: select_set_fun
@@ -84,7 +69,7 @@ ui <- fluidPage(
         
         
         
-
+        
         
         
         conditionalPanel(
@@ -98,22 +83,37 @@ ui <- fluidPage(
             
             textInput("solution_number1", label = h2("Set Numbers 1"), value = "",width = "400px"),
             verbatimTextOutput("evaluation1"),
-
+            checkboxInput('answer1','Show Answer', value = FALSE),
+            htmlOutput("eval1_answer"),
+            
             textInput("solution_number2", label = h2("Set Numbers 2"), value = "",width = "400px"),
             verbatimTextOutput("evaluation2"),
-
-
+            checkboxInput('answer2','Show Answer', value = FALSE),
+            htmlOutput("eval2_answer"),
+            
+            
+            
             textInput("solution_number3", label = h2("Set Numbers 3"), value = "",width = "400px"),
             verbatimTextOutput("evaluation3"),
-
-
-
+            checkboxInput('answer3','Show Answer', value = FALSE),
+            htmlOutput("eval3_answer"),
+            
+            
+            
+            
             textInput("solution_number4", label = h2("Set Numbers 4"), value = "",width = "400px"),
             verbatimTextOutput("evaluation4"),
-
-
+            checkboxInput('answer4','Show Answer', value = FALSE),
+            htmlOutput("eval4_answer"),
+            
+            
+            
             textInput("solution_number5", label = h2("Set Numbers 5"), value = "",width = "400px"),
-            verbatimTextOutput("evaluation5")
+            verbatimTextOutput("evaluation5"),
+            checkboxInput('answer5','Show Answer', value = FALSE),
+            htmlOutput("eval5_answer")
+            
+            
         ),
         
         
@@ -157,7 +157,7 @@ server <- function(input, output,session) {
     #     # paste0('love')
     # })
     
-     timer <- reactiveVal(10)
+    timer <- reactiveVal(10)
     active <- reactiveVal(FALSE)
     observeEvent(input$start, {active(TRUE)})
     observeEvent(input$stop, {active(FALSE)})
@@ -166,7 +166,7 @@ server <- function(input, output,session) {
     output$timeleft <- renderText({
         paste("Time left: ", seconds_to_period(timer()))
     })
-   
+    
     
     output$evaluation <- renderPrint({ 
         ## Get My answer
@@ -181,13 +181,13 @@ server <- function(input, output,session) {
         paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
         
     })
- 
+    
     
     output$evaluation1 <- renderPrint({ 
         number_row = 1
         ## Get My answer
         emans_solution = str_extract_all(input$solution_number1, boundary("character"))[[1]]
-
+        
         
         tmp_df = df %>% 
             filter(labeled == input$set_combination)
@@ -203,7 +203,25 @@ server <- function(input, output,session) {
         
     })
     
-   
+    
+    ## Answer Box
+    output$eval1_answer <- renderUI({
+        number_row = 1
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        ## USer wants to see answer
+        if(input$answer1 == TRUE){
+            HTML(paste0(reals_solution,''))
+        } 
+        
+    })
+    
+    
     
     ## 2
     output$evaluation2 <- renderPrint({ 
@@ -227,6 +245,26 @@ server <- function(input, output,session) {
     })
     
     
+    
+    ## Answer Box
+    output$eval2_answer <- renderUI({
+        number_row = 2
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        ## USer wants to see answer
+        if(input$answer2 == TRUE){
+            HTML(paste0(reals_solution,''))
+        } 
+        
+    })
+    
+    
+    
     ## 3
     output$evaluation3 <- renderPrint({ 
         number_row = 3
@@ -247,6 +285,27 @@ server <- function(input, output,session) {
         paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
         
     })
+    
+    
+    
+    ## Answer Box
+    output$eval3_answer <- renderUI({
+        number_row = 3
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        ## USer wants to see answer
+        if(input$answer3 == TRUE){
+            HTML(paste0(reals_solution,''))
+        } 
+        
+    })
+    
+    
     
     ## 4
     output$evaluation4 <- renderPrint({ 
@@ -269,6 +328,26 @@ server <- function(input, output,session) {
         
     })
     
+    
+    ## Answer Box
+    output$eval4_answer <- renderUI({
+        number_row = 4
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
+        
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        ## USer wants to see answer
+        if(input$answer4 == TRUE){
+            HTML(paste0(reals_solution,''))
+        } 
+        
+    })
+    
+    
+    
     ## 5
     
     output$evaluation5 <- renderPrint({ 
@@ -290,7 +369,25 @@ server <- function(input, output,session) {
         paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
         
     })
+    
+    ## Answer Box
+    output$eval5_answer <- renderUI({
+        number_row = 5
+        tmp_df = df %>% 
+            filter(labeled == input$set_combination)
         
+        ## The Solution
+        reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+            str_remove('\\.') %>% 
+            str_subset( ".+")
+        ## USer wants to see answer
+        if(input$answer5 == TRUE){
+            HTML(paste0(reals_solution,''))
+        } 
+        
+    })
+    
+    
     
 }
 
