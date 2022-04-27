@@ -15,7 +15,7 @@ library(tidyverse)
 
 library(lubridate)
 
-setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life/01_thoughts_self/numberTracker")
+setwd("C:/Users/james/OneDrive/Documents/Important_Files/Life/01_thoughts_self/01_enhancing_self/numberTracker")
 source('bring_in_e.R')
 
 ##--------------------------------------
@@ -113,8 +113,14 @@ ui <- fluidPage(
       textInput("solution_number5", label = h2("Set Numbers 5"), value = "",width = "400px"),
       verbatimTextOutput("evaluation5"),
       radioButtons('answer5','Show Answer', c('Nothing','Answer','Location'), selected = 'Nothing'),
-      htmlOutput("eval5_answer")
+      htmlOutput("eval5_answer"),
       
+      
+      
+      textInput("solution_number6", label = h2("Set Numbers 6"), value = "",width = "400px"),
+      verbatimTextOutput("evaluation6"),
+      radioButtons('answer6','Show Answer', c('Nothing','Answer','Location'), selected = 'Nothing'),
+      htmlOutput("eval6_answer")
       
     ),
     
@@ -436,6 +442,73 @@ server <- function(input, output,session) {
     }
     
   })
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  ## 6
+  
+  output$evaluation6 <- renderPrint({ 
+    number_row = 6
+    ## Get My answer
+    emans_solution = str_extract_all(input$solution_number6, boundary("character"))[[1]]
+    
+    
+    tmp_df = df %>% 
+      filter(labeled == input$set_combination)
+    
+    ## The Solution
+    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+      str_remove('\\.') %>% 
+      str_subset( ".+")
+    
+    numbers_tested = length(reals_solution)
+    ## Check
+    paste0(round(sum(emans_solution == reals_solution)/ numbers_tested,3) * 100, ' %')
+    
+  })
+  
+  ## Answer Box
+  output$eval6_answer <- renderUI({
+    number_row = 6
+    tmp_df = df %>% 
+      filter(labeled == input$set_combination)
+    
+    ## Get My answer
+    emans_solution = str_extract_all(input$solution_number6, boundary("character"))[[1]]
+    
+    
+    
+    
+    ## The Solution
+    reals_solution = str_extract_all(pull(tmp_df[number_row,1],Merged), boundary("character"))[[1]] %>% 
+      str_remove('\\.') %>% 
+      str_subset( ".+")
+    ## User wants to see answer
+    if(input$answer6 == 'Answer'){
+      HTML(paste(reals_solution,collapse = '')) 
+    } else if(input$answer6 == 'Location') {
+      HTML(paste(ifelse(emans_solution == reals_solution,1,0),collapse = ''))
+    } else if(input$answer6 == 'Nothing'){
+      HTML('')
+    }
+    
+  })
+  
+  
+  
+  
+  
+  
+  
   
   
   
